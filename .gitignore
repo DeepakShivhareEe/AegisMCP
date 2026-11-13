@@ -1,0 +1,35 @@
+# --- Secrets -------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Python --------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# --- Local databases -----------------------------------------------------
+*.db
+*.db-journal
+*.sqlite3
+
+# --- Frontend / Node -----------------------------------------------------
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# --- Logs & OS clutter ---------------------------------------------------
+*.log
+.DS_Store
+Thumbs.db
+
+# --- Tooling metadata ----------------------------------------------------
+.freebuff/

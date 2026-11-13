@@ -1,0 +1,372 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Obsidian Carbon Design System */
+:root {
+  --color-canvas: #09090B;      /* zinc-950 */
+  --color-surface: #111113;     /* zinc-900 */
+  --color-surface-hover: #18181B; /* zinc-900/80 */
+  --color-border: #27272A;      /* zinc-800 */
+  --color-border-subtle: #27272A66; /* zinc-800/40 */
+  --color-border-focus: #3F3F46; /* zinc-700 */
+  --color-primary: #FAFAFA;     /* zinc-50 */
+  --color-secondary: #A1A1AA;   /* zinc-400 */
+  --color-muted: #71717A;       /* zinc-500 */
+  --color-emerald: #34D399;     /* emerald-400 */
+  --color-red: #F87171;         /* red-400 */
+  --color-amber: #FBBF24;       /* amber-400 */
+  --color-blue: #60A5FA;        /* blue-400 */
+  --color-purple: #A78BFA;      /* purple-400 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-canvas: #09090B;
+    --color-surface: #111113;
+    --color-surface-hover: #18181B;
+    --color-border: #27272A;
+    --color-border-subtle: #27272A66;
+    --color-border-focus: #3F3F46;
+    --color-primary: #FAFAFA;
+    --color-secondary: #A1A1AA;
+    --color-muted: #71717A;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  @apply bg-canvas text-primary min-h-screen;
+  background-color: var(--color-canvas);
+  color: var(--color-primary);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+  border: 2px solid var(--color-canvas);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-focus);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--color-canvas);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) var(--color-canvas);
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-border-focus);
+  color: var(--color-primary);
+}
+
+/* Utility classes */
+.bg-canvas { background-color: var(--color-canvas); }
+.bg-surface { background-color: var(--color-surface); }
+.bg-surface-hover { background-color: var(--color-surface-hover); }
+.bg-surface\/50 { background-color: var(--color-surface); opacity: 0.5; }
+
+.border-border-subtle { border-color: var(--color-border-subtle); }
+.border-border-focus { border-color: var(--color-border-focus); }
+.border-border { border-color: var(--color-border); }
+
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-muted { color: var(--color-muted); }
+.text-emerald-400 { color: var(--color-emerald); }
+.text-red-400 { color: var(--color-red); }
+.text-amber-400 { color: var(--color-amber); }
+.text-blue-400 { color: var(--color-blue); }
+.text-purple-400 { color: var(--color-purple); }
+
+.bg-emerald-400\/10 { background-color: rgba(52, 211, 153, 0.1); }
+.bg-emerald-400\/20 { background-color: rgba(52, 211, 153, 0.2); }
+.bg-emerald-400\/25 { background-color: rgba(52, 211, 153, 0.25); }
+.bg-red-400\/10 { background-color: rgba(248, 113, 113, 0.1); }
+.bg-red-400\/20 { background-color: rgba(248, 113, 113, 0.2); }
+.bg-red-400\/25 { background-color: rgba(248, 113, 113, 0.25); }
+.bg-amber-400\/10 { background-color: rgba(251, 191, 36, 0.1); }
+.bg-amber-400\/20 { background-color: rgba(251, 191, 36, 0.2); }
+.bg-amber-400\/25 { background-color: rgba(251, 191, 36, 0.25); }
+.bg-amber-500\/10 { background-color: rgba(245, 158, 11, 0.1); }
+.bg-amber-500\/30 { background-color: rgba(245, 158, 11, 0.3); }
+.bg-blue-400\/10 { background-color: rgba(96, 165, 250, 0.1); }
+.bg-purple-400\/10 { background-color: rgba(167, 139, 250, 0.1); }
+.bg-primary\/10 { background-color: rgba(250, 250, 250, 0.1); }
+.bg-primary\/20 { background-color: rgba(250, 250, 250, 0.2); }
+.bg-black\/40 { background-color: rgba(0, 0, 0, 0.4); }
+.bg-black\/60 { background-color: rgba(0, 0, 0, 0.6); }
+
+.border-emerald-400\/25 { border-color: rgba(52, 211, 153, 0.25); }
+.border-emerald-400\/30 { border-color: rgba(52, 211, 153, 0.3); }
+.border-red-400\/25 { border-color: rgba(248, 113, 113, 0.25); }
+.border-red-400\/30 { border-color: rgba(248, 113, 113, 0.3); }
+.border-amber-400\/25 { border-color: rgba(251, 191, 36, 0.25); }
+.border-amber-400\/30 { border-color: rgba(251, 191, 36, 0.3); }
+.border-primary\/25 { border-color: rgba(250, 250, 250, 0.25); }
+.border-border-subtle\/50 { border-color: var(--color-border-subtle); opacity: 0.5; }
+
+.text-emerald-400 { color: var(--color-emerald); }
+.text-red-400 { color: var(--color-red); }
+.text-amber-400 { color: var(--color-amber); }
+.text-blue-400 { color: var(--color-blue); }
+.text-purple-400 { color: var(--color-purple); }
+
+/* Status badge */
+.status-badge {
+  @apply px-2 py-0.5 rounded text-xs font-mono;
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(17, 17, 19, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Tabular numbers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mono font */
+.mono {
+  font-family: inherit;
+}
+
+/* Animations */
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+/* ==========================================================================
+   Spatial Obsidian — Awwwards-grade 3D surface system
+   ========================================================================== */
+
+:root {
+  --spatial-bg: #050507;
+  --glass-edge: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background-color: var(--spatial-bg);
+  background-image:
+    radial-gradient(circle at 50% -12%, rgba(255, 255, 255, 0.07), transparent 55%),
+    radial-gradient(circle at 8% 92%, rgba(16, 185, 129, 0.06), transparent 46%),
+    radial-gradient(circle at 92% 8%, rgba(96, 165, 250, 0.04), transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: auto, auto, auto, 56px 56px, 56px 56px;
+  background-attachment: fixed;
+}
+
+/* Fine matrix used inside the spatial canvas frame */
+.spatial-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, black 25%, transparent 78%);
+  mask-image: radial-gradient(circle at 50% 45%, black 25%, transparent 78%);
+}
+
+/* Floating glass command bar / panels */
+.glass-panel {
+  background: rgba(9, 9, 11, 0.72);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border-bottom: 1px solid var(--glass-edge);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 9999px;
+}
+
+/* Brushed-chrome type treatment for the brand mark */
+.chrome-text {
+  background: linear-gradient(180deg, #ffffff 0%, #d4d4d8 46%, #71717a 62%, #f4f4f5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Metallic specular border: a conic gradient masked to a 1px ring */
+.specular-border {
+  position: relative;
+}
+.specular-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 140deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.32),
+    rgba(16, 185, 129, 0.22),
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.28),
+    rgba(255, 255, 255, 0.02)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+/* HUD corner ticks for drawers and hero frames */
+.hud-corners::before,
+.hud-corners::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+.hud-corners::before {
+  top: 10px;
+  left: 10px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+.hud-corners::after {
+  bottom: 10px;
+  right: 10px;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+/* Shimmering primary action */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.06) 20%,
+    rgba(255, 255, 255, 0.28) 42%,
+    rgba(16, 185, 129, 0.24) 50%,
+    rgba(255, 255, 255, 0.06) 72%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3.4s linear infinite;
+}
+
+/* SSE waveform indicator */
+@keyframes waveform {
+  0%, 100% { transform: scaleY(0.35); opacity: 0.45; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+.wave-bar {
+  transform-origin: center;
+  animation: waveform 1.15s ease-in-out infinite;
+}
+
+/* Spatial drawer */
+.drawer-glass {
+  background: linear-gradient(180deg, rgba(17, 17, 19, 0.92), rgba(5, 5, 7, 0.94));
+  backdrop-filter: blur(28px) saturate(130%);
+  -webkit-backdrop-filter: blur(28px) saturate(130%);
+}
+
+/* JSON token colors for the inspector */
+.json-key { color: #a5b4fc; }
+.json-string { color: #6ee7b7; }
+.json-number { color: #fcd34d; }
+.json-boolean { color: #f9a8d4; }
+.json-null { color: #71717a; }
+
+/* Refined scrollbars for spatial surfaces */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer,
+  .wave-bar,
+  .animate-pulse,
+  .animate-spin {
+    animation: none !important;
+  }
+}
