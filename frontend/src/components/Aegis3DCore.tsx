@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { AgentTrace, MCPServer } from "@/types/aegis";
 import {
   createSpatialScene,
-  DEFAULT_NODES,
   type CoreTone,
   type SpatialNode,
   type SpatialSceneHandle,
@@ -45,8 +44,9 @@ export default function Aegis3DCore({
   const lastSignalRef = useRef(0);
   const [webglError, setWebglError] = useState(false);
 
+  // Only real registered servers are visualised: inventing placeholder nodes
+  // here made an empty deployment look populated.
   const nodes: SpatialNode[] = useMemo(() => {
-    if (servers.length === 0) return DEFAULT_NODES;
     return servers.slice(0, 4).map((server) => ({
       name: server.name,
       status: server.status,

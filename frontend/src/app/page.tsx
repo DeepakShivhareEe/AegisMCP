@@ -131,7 +131,7 @@ export default function Page() {
                     <Boxes className="h-3.5 w-3.5 text-emerald-400/70" />
                     Spatial topology
                     <span className="text-white/15">
-                      / {servers.length || 4} nodes · {traces.length} traces
+                      / {servers.length} nodes · {traces.length} traces
                     </span>
                   </div>
                   <button

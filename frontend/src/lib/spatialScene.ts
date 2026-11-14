@@ -256,7 +256,7 @@ export function createSpatialScene({
 
   let active = true;
   let tone: CoreTone = "healthy";
-  let nodes = DEFAULT_NODES;
+  let nodes: SpatialNode[] = [];
   let frameId = 0;
   let lastTime = performance.now();
 
@@ -369,7 +369,7 @@ export function createSpatialScene({
       applyNodes();
     },
     setNodes: (next) => {
-      nodes = next.length > 0 ? next.slice(0, NODE_COUNT) : DEFAULT_NODES;
+      nodes = next.slice(0, NODE_COUNT);
       applyNodes();
     },
     shockwave: triggerShockwave,
