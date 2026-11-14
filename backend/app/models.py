@@ -50,7 +50,9 @@ class MCPServer(Base):
     # SHA-256 of the canonical tool manifest, pinned on first tools/list.
     tool_manifest_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     pinned_tools: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
     traces: Mapped[list["AgentTrace"]] = relationship(
         "AgentTrace", back_populates="mcp_server", cascade="all, delete-orphan"
@@ -74,8 +76,12 @@ class APIKey(Base):
     key_prefix: Mapped[str] = mapped_column(String(16), nullable=False)
     key_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
     is_active: Mapped[bool] = mapped_column(default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    last_used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    last_used_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"<APIKey(id={self.id}, name={self.name}, prefix={self.key_prefix})>"
@@ -101,8 +107,12 @@ class AgentTrace(Base):
     total_cost_usd: Mapped[float] = mapped_column(Float, default=0.0)
     total_latency_ms: Mapped[int] = mapped_column(Integer, default=0)
     step_count: Mapped[int] = mapped_column(Integer, default=0)
-    started_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    ended_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    started_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    ended_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     mcp_server_id: Mapped[str | None] = mapped_column(
         String, ForeignKey("mcp_servers.id"), nullable=True
@@ -135,7 +145,9 @@ class TraceSpan(Base):
     guardrail_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Principal that initiated the span; used for separation-of-duties checks.
     requester_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
     trace: Mapped["AgentTrace"] = relationship("AgentTrace", back_populates="spans")
 

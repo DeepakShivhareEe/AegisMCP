@@ -29,7 +29,12 @@ async def run_tests():
 
     rate_limit_service.max_requests = 10_000
 
-    async with httpx.AsyncClient(app=app, base_url="http://testserver") as client:
+    # httpx >= 0.28 removed the ``app=`` shortcut; ASGITransport is the
+    # supported equivalent and keeps the suite runnable on current releases.
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(
+        transport=transport, base_url="http://testserver"
+    ) as client:
         # 1. Health checks (both root /health and /api/v1/health)
         print("[2/8] Testing /health and /api/v1/health...")
         res_root = await client.get("/health")
@@ -147,7 +152,7 @@ async def run_tests():
         requester_id = res.json()["spans"][0]["requester_id"]
         assert requester_id == "op-test-1", requester_id
 
-        async with httpx.AsyncClient(app=app, base_url="http://testserver") as reviewer:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://testserver") as reviewer:
             res = await reviewer.post(
                 "/api/v1/auth/session",
                 json={"operator_id": "op-reviewer", "org_id": "org-1", "role": "admin"},
@@ -167,7 +172,7 @@ async def run_tests():
 
         # 7b. Security boundary: anonymous access and missing CSRF are rejected.
         print("[7b/9] Testing auth + CSRF enforcement...")
-        async with httpx.AsyncClient(app=app, base_url="http://testserver") as anon:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://testserver") as anon:
             assert (await anon.get("/api/v1/traces")).status_code == 401
             assert (await anon.get("/api/v1/analytics/summary")).status_code == 401
             assert (await anon.post("/api/v1/simulator/trigger", json={})).status_code == 401
@@ -540,7 +545,7 @@ async def run_tests():
 
         # 7h. Role scoping: auditors are read-only.
         print("[7h/9] Testing auditor role restrictions...")
-        async with httpx.AsyncClient(app=app, base_url="http://testserver") as auditor:
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://testserver") as auditor:
             res = await auditor.post(
                 "/api/v1/auth/session",
                 json={"operator_id": "op-auditor", "org_id": "org-1", "role": "auditor"},

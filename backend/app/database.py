@@ -45,6 +45,19 @@ _FORWARD_COLUMNS: dict[str, tuple[tuple[str, str], ...]] = {
 }
 
 
+# Timestamp columns that must be timezone-aware. Earlier builds declared them
+# as TIMESTAMP WITHOUT TIME ZONE while the application has always written
+# timezone-aware UTC datetimes; PostgreSQL rejects that mix (asyncpg raises
+# "can't subtract offset-naive and offset-aware datetimes"), so existing
+# databases are converted in place on startup.
+_UTC_COLUMNS: dict[str, tuple[str, ...]] = {
+    "agent_traces": ("started_at", "ended_at"),
+    "api_keys": ("created_at", "last_used_at"),
+    "mcp_servers": ("created_at",),
+    "trace_spans": ("created_at",),
+}
+
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """Yield an async SQLAlchemy session as a FastAPI dependency.
 
@@ -86,8 +99,44 @@ async def _ensure_forward_columns(conn) -> None:
             )
 
 
+def _naive_timestamp_columns(sync_conn, table_name: str) -> list[str]:
+    """Return timestamp columns on the table that are not timezone-aware."""
+    wanted = _UTC_COLUMNS[table_name]
+    return [
+        column["name"]
+        for column in inspect(sync_conn).get_columns(table_name)
+        if column["name"] in wanted
+        and not getattr(column["type"], "timezone", False)
+    ]
+
+
+async def _ensure_utc_timestamps(conn) -> None:
+    """Convert naive timestamp columns to timestamptz, idempotently."""
+    if conn.dialect.name != "postgresql":
+        # SQLite stores timestamps as text and ignores the timezone flag.
+        return
+    for table_name in _UTC_COLUMNS:
+        try:
+            naive_columns = await conn.run_sync(_naive_timestamp_columns, table_name)
+        except Exception:  # noqa: BLE001 - table may not exist on a cold start
+            logger.debug("Skipping timestamp inspection for %s", table_name)
+            continue
+        for column_name in naive_columns:
+            logger.info(
+                "Migrating %s.%s to TIMESTAMP WITH TIME ZONE", table_name, column_name
+            )
+            await conn.execute(
+                text(
+                    f"ALTER TABLE {table_name} ALTER COLUMN {column_name} "
+                    "TYPE TIMESTAMP WITH TIME ZONE "
+                    f"USING {column_name} AT TIME ZONE 'UTC'"
+                )
+            )
+
+
 async def init_db() -> None:
     """Create all database tables and apply lightweight forward migrations."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         await _ensure_forward_columns(conn)
+        await _ensure_utc_timestamps(conn)
