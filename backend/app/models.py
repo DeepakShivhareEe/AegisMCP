@@ -73,7 +73,7 @@ class APIKey(Base):
         default=settings.DEFAULT_ORG_ID,
         server_default=settings.DEFAULT_ORG_ID,
     )
-    key_prefix: Mapped[str] = mapped_column(String(16), nullable=False)
+    key_prefix: Mapped[str] = mapped_column(String(32), nullable=False)
     key_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
     is_active: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(

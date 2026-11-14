@@ -87,25 +87,21 @@ export default function FinOpsMetrics() {
           title="Total Spend (24h)"
           value={`$${totalSpend.toFixed(4)}`}
           icon={<DollarSign className="text-emerald-400" />}
-          trend="+12.4%"
         />
         <MetricCard
           title="Active Sessions"
           value={activeSessions.toLocaleString()}
           icon={<Activity className="text-secondary" />}
-          trend="+3.2%"
         />
         <MetricCard
           title="Guardrail Interceptions"
           value={interceptions.toLocaleString()}
           icon={<AlertTriangle className="text-amber-400" />}
-          trend="-8.1%"
         />
         <MetricCard
           title="Mean TTFT (ms)"
           value={meanTTFT.toFixed(0)}
           icon={<Zap className="text-muted" />}
-          trend="-15ms"
         />
       </div>
 
@@ -160,12 +156,10 @@ function MetricCard({
   title,
   value,
   icon,
-  trend,
 }: {
   title: string;
   value: string;
   icon: ReactNode;
-  trend: string;
 }) {
   return (
     <SpatialCard glow="emerald" className="p-4">
@@ -176,7 +170,6 @@ function MetricCard({
         </div>
       </div>
       <div className="font-mono text-2xl font-bold tabular-nums text-white">{value}</div>
-      <div className="mt-1 font-mono text-xs text-emerald-400">{trend}</div>
     </SpatialCard>
   );
 }

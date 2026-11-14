@@ -110,6 +110,55 @@ def _naive_timestamp_columns(sync_conn, table_name: str) -> list[str]:
     ]
 
 
+# Columns whose declared VARCHAR length was too small for the values the
+# application writes. SQLite ignores the limit, PostgreSQL rejects the insert,
+# so existing databases are widened in place.
+_MIN_COLUMN_LENGTHS: dict[tuple[str, str], int] = {
+    # ``aegis_live_`` + 8 characters of entropy = 19 characters.
+    ("api_keys", "key_prefix"): 32,
+}
+
+
+def _too_narrow_columns(sync_conn, table_name: str) -> list[tuple[str, int]]:
+    """Return (column, required length) pairs whose VARCHAR is too short."""
+    wanted = {
+        column: length
+        for (table, column), length in _MIN_COLUMN_LENGTHS.items()
+        if table == table_name
+    }
+    narrow: list[tuple[str, int]] = []
+    for column in inspect(sync_conn).get_columns(table_name):
+        required = wanted.get(column["name"])
+        if required is None:
+            continue
+        current = getattr(column["type"], "length", None)
+        if current is not None and current < required:
+            narrow.append((column["name"], required))
+    return narrow
+
+
+async def _ensure_column_widths(conn) -> None:
+    """Widen undersized VARCHAR columns, idempotently."""
+    if conn.dialect.name != "postgresql":
+        return
+    for table_name in {table for table, _ in _MIN_COLUMN_LENGTHS}:
+        try:
+            narrow_columns = await conn.run_sync(_too_narrow_columns, table_name)
+        except Exception:  # noqa: BLE001 - table may not exist on a cold start
+            logger.debug("Skipping width inspection for %s", table_name)
+            continue
+        for column_name, required in narrow_columns:
+            logger.info(
+                "Migrating %s.%s to VARCHAR(%s)", table_name, column_name, required
+            )
+            await conn.execute(
+                text(
+                    f"ALTER TABLE {table_name} ALTER COLUMN {column_name} "
+                    f"TYPE VARCHAR({required})"
+                )
+            )
+
+
 async def _ensure_utc_timestamps(conn) -> None:
     """Convert naive timestamp columns to timestamptz, idempotently."""
     if conn.dialect.name != "postgresql":
@@ -140,3 +189,4 @@ async def init_db() -> None:
         await conn.run_sync(Base.metadata.create_all)
         await _ensure_forward_columns(conn)
         await _ensure_utc_timestamps(conn)
+        await _ensure_column_widths(conn)
